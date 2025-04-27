@@ -1,0 +1,10 @@
+Flask
+Flask-Session
+requests
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+openai
+python-dotenv
+flask-cors
+oauthlib

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AsserElGarhyGPT</title>
+
+  <!-- Orbitron Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Favicon (Optional) -->
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(ellipse at center, #0d0d2b 0%, #090a1a 100%);
+      color: white;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: #111132;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      border-right: 1px solid #1f1f4d;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      margin-top: 0;
+    }
+
+    .sidebar button, .chat-item {
+      background: #1a1a3d;
+      border: none;
+      margin: 8px 0;
+      padding: 12px;
+      color: white;
+      text-align: left;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+    .sidebar button:hover, .chat-item:hover {
+      background: #292961;
+    }
+
+    /* Topbar */
+    .topbar {
+      background: #0b0b2a;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1f1f4d;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .topbar button {
+      background: #1a1a3d;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-container {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chat-bubble {
+      max-width: 70%;
+      padding: 10px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      word-wrap: break-word;
+    }
+
+    .user {
+      background: #1e1e4d;
+      align-self: flex-end;
+    }
+
+    .bot {
+      background: #292961;
+      align-self: flex-start;
+    }
+
+    /* Input Area */
+    .input-area {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #1f1f4d;
+      background: #111132;
+      gap: 10px;
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+    }
+
+    .input-area button {
+      padding: 10px 20px;
+      border: none;
+      background: #1f1f66;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    /* Image style */
+    .generated-image {
+      max-width: 300px;
+      border-radius: 10px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <button id="google-login">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" style="height:16px; vertical-align:middle;"> Sign In with Google
+    </button>
+    <h2>Chats</h2>
+    <button id="new-chat">+ New Chat</button>
+    <div id="chats-list"></div>
+  </div>
+
+  <!-- Main Area -->
+  <div class="main">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <h2>AsserElGarhyGPT ▼</h2>
+      </div>
+      <div class="topbar-right">
+        <button>Try Advanced 🔥</button>
+        <img src="https://randomuser.me/api/portraits/lego/1.jpg" alt="Profile" style="height: 32px; width: 32px; border-radius: 50%;">
+      </div>
+    </div>
+
+    <!-- Chat Container -->
+    <div id="chat-container" class="chat-container">
+      <h1 id="greeting" style="text-align:center;">Hello, User 👋</h1>
+    </div>
+
+    <!-- Input Area -->
+    <div class="input-area">
+      <input id="user-input" type="text" placeholder="Ask AsserElGarhyGPT..." />
+      <button id="mic-btn">🎙️</button>
+      <button id="generate-image">🖼️</button>
+      <button id="send-btn">Send</button>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="asserelgarhy_gpt.js"></script>
+
+  <script>
+    // === Speech Recognition ===
+    const micButton = document.getElementById('mic-btn');
+    const userInput = document.getElementById('user-input');
+
+    if ('webkitSpeechRecognition' in window) {
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      micButton.addEventListener('click', () => {
+        recognition.start();
+      });
+
+      recognition.addEventListener('result', (event) => {
+        const transcript = event.results[0][0].transcript;
+        userInput.value = transcript;
+      });
+
+      recognition.addEventListener('error', (event) => {
+        console.error('Speech recognition error', event.error);
+      });
+    } else {
+      micButton.disabled = true;
+      alert("Speech Recognition not supported in your browser!");
+    }
+  </script>
+
+</body>
+</html>
