@@ -1,0 +1,12 @@
+{
+  "name": "asserelgarhy-gpt",
+  "version": "1.0.0",
+  "description": "asserelgarhygpt",
+  "main": "asserelgarhy_gpt.js",
+  "scripts": {
+    "start": "node asserelgarhy_gpt.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
